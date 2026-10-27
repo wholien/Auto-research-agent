@@ -42,6 +42,13 @@ for scale in [1, 2] {
     arrow.lineCapStyle = .round
     arrow.lineJoinStyle = .round
     arrow.stroke()
+    // Finder uses dark filenames over picture backgrounds, even in Dark Mode.
+    // These plates sit behind the real labels; do not bake filenames into the art.
+    NSColor(white: 0.86, alpha: 1).setFill()
+    for (x, top, plateWidth) in [(80.0, 282.0, 160.0), (430.0, 282.0, 140.0), (265.0, 422.0, 130.0)] {
+        let plate = NSRect(x: x, y: Double(height) - top - 30, width: plateWidth, height: 30)
+        NSBezierPath(roundedRect: plate, xRadius: 15, yRadius: 15).fill()
+    }
     NSGraphicsContext.restoreGraphicsState()
     representations.append(bitmap)
 }
