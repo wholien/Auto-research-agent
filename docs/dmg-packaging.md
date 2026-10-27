@@ -24,7 +24,8 @@ open build/layout-preview.dmg
 This copies the supplied app into temporary staging, adds the same readme and
 layout used by the release, and verifies the resulting disk image. It does not
 build, launch, re-sign, or notarize the app. The preview disk image is unsigned
-and has a distinct volume name, `Auto Research Preview`. Choose a new output
+and uses the output filename (without `.dmg`) as its volume name, so preview
+versions can be distinguished in Finder. Choose a new output
 filename for each iteration; existing output files are never overwritten.
 
 ## Release and artwork
@@ -48,3 +49,10 @@ is copied into `.background` by create-dmg.
 - Eject and reopen the image to confirm the saved presentation survives remounting.
 - For an official release, run the existing signing, notarization, stapling, and
   disk-image verification steps in `package_dmg.sh`.
+
+The background covers 3840 × 2160 points, while the initial window and icon
+layout stay compact. The extended dark canvas avoids white margins in larger
+Finder windows within that size; it does not make the layout responsive. Finder
+can still expose its own background beyond those dimensions. TIFF LZW compression
+keeps the enlarged 1x/2x artwork compact. Dark Mode does not automatically recolor
+Finder's area outside a picture background.

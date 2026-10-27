@@ -16,6 +16,6 @@ trap 'rm -rf "$STAGING"' EXIT
 ditto "$APP" "$STAGING/Auto Research.app"
 ln -s /Applications "$STAGING/Applications"
 cp "$PROJECT_ROOT/Resources/DMG-Readme.txt" "$STAGING/Read me.txt"
-"$PROJECT_ROOT/scripts/create_dmg.sh" "$STAGING" "$DMG" 'Auto Research Preview'
+"$PROJECT_ROOT/scripts/create_dmg.sh" "$STAGING" "$DMG" "${DMG:t:r}"
 hdiutil verify "$DMG"
 echo "Preview only (disk image is not signed or notarized): $DMG"

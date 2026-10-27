@@ -1,8 +1,11 @@
 import AppKit
 
 // Finder coordinates and the layout in create_dmg.sh use points, not pixels.
-let width = 660
-let height = 460
+// Finder does not scale picture backgrounds with the window. Extend the canvas
+// to cover large windows; keep the installation layout anchored at the top left.
+let width = 3840
+let height = 2160
+let layoutWidth = 660
 let destination = URL(fileURLWithPath: CommandLine.arguments[1])
 var representations: [NSBitmapImageRep] = []
 for scale in [1, 2] {
@@ -14,16 +17,18 @@ for scale in [1, 2] {
     NSGraphicsContext.saveGraphicsState()
     NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: bitmap)
     let canvas = NSRect(x: 0, y: 0, width: width, height: height)
+    NSColor(srgbRed: 0.09, green: 0.08, blue: 0.13, alpha: 1).setFill()
+    canvas.fill()
     NSGradient(starting: NSColor(srgbRed: 0.09, green: 0.08, blue: 0.13, alpha: 1),
                ending: NSColor(srgbRed: 0.18, green: 0.16, blue: 0.25, alpha: 1))!
-        .draw(in: canvas, angle: 90)
+        .draw(in: NSRect(x: 0, y: height - 460, width: width, height: 460), angle: 90)
 
     func centered(_ text: String, top: CGFloat, size: CGFloat, color: NSColor, weight: NSFont.Weight) {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: NSFont.systemFont(ofSize: size, weight: weight), .foregroundColor: color
         ]
         let bounds = (text as NSString).size(withAttributes: attributes)
-        (text as NSString).draw(at: NSPoint(x: (CGFloat(width) - bounds.width) / 2,
+        (text as NSString).draw(at: NSPoint(x: (CGFloat(layoutWidth) - bounds.width) / 2,
             y: CGFloat(height) - top - bounds.height), withAttributes: attributes)
     }
     centered("Auto Research", top: 70, size: 27, color: .white, weight: .semibold)
@@ -53,5 +58,5 @@ for scale in [1, 2] {
     representations.append(bitmap)
 }
 // A multi-resolution TIFF keeps text sharp on Retina displays at the same point size.
-let data = NSBitmapImageRep.representationOfImageReps(in: representations, using: .tiff, properties: [:])!
+let data = NSBitmapImageRep.representationOfImageReps(in: representations, using: .tiff, properties: [.compressionMethod: NSBitmapImageRep.TIFFCompression.lzw.rawValue])!
 try data.write(to: destination)
