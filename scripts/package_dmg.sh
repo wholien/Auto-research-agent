@@ -3,6 +3,7 @@ set -euo pipefail
 PROJECT_ROOT="${0:A:h:h}"
 cd "$PROJECT_ROOT"
 python3 scripts/check_workspace.py "$PROJECT_ROOT"
+command -v create-dmg >/dev/null 2>&1 || { echo "Install create-dmg first: brew install create-dmg" >&2; exit 1; }
 : "${RESEARCH_SIGNING_IDENTITY:?Set a Developer ID Application signing identity}"
 : "${RESEARCH_NOTARY_PROFILE:?Set an existing notarytool keychain profile}"
 export TMPDIR="$PROJECT_ROOT/tmp/"
@@ -27,21 +28,10 @@ xcrun stapler staple "$RESEARCH_APP_OUTPUT"
 xcrun stapler validate "$RESEARCH_APP_OUTPUT"
 spctl --assess --type execute --verbose=2 "$RESEARCH_APP_OUTPUT"
 ln -sfn /Applications "$RELEASE/staging/Applications"
-cat > "$RELEASE/staging/Read me.txt" <<'TXT'
-Auto-research agent
-
-Requires macOS 14 or newer and Apple Silicon.
-Drag Auto Research into Applications, then open it.
-Choose a folder on a mounted external drive for research projects and chat history.
-For local runs, install Codex or Claude Code and sign in through Connections & settings.
-For cloud runs, enter a Daytona key and complete cloud Codex device sign-in in Daytona settings.
-If a CLI is not detected, enter its executable path in Connections & settings.
-
-Source and MIT license: https://github.com/rohanarun/Auto-research-agent
-TXT
+cp Resources/DMG-Readme.txt "$RELEASE/staging/Read me.txt"
 VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$RESEARCH_APP_OUTPUT/Contents/Info.plist")
 DMG="$RELEASE/Auto-research-agent-$VERSION-arm64.dmg"
-hdiutil create -volname 'Auto-research agent' -srcfolder "$RELEASE/staging" -format UDZO -ov "$DMG"
+./scripts/create_dmg.sh "$RELEASE/staging" "$DMG"
 codesign --force --timestamp --sign "$RESEARCH_SIGNING_IDENTITY" "$DMG"
 xcrun notarytool submit "$DMG" --keychain-profile "$RESEARCH_NOTARY_PROFILE" --wait --output-format json > "$RELEASE/dmg-notarization.json"
 python3 - "$RELEASE/dmg-notarization.json" <<'PY'

@@ -240,3 +240,8 @@ Licensed under the [MIT License](LICENSE). Codex, Claude Code, OpenCode, the fet
 Connections & settings → Lean server can host an authenticated verifier on this Mac and optionally share it through ngrok. Search agents submit candidates and poll durable jobs while the host retains Lean dependencies, build caches and verification evidence. New local runs receive the local connection automatically; Daytona workers receive the remote connection when sharing is enabled. Agent37 nodes use the same HTTPS client.
 
 The bundled skill starts with source-pinned QRH CPU certificate screening and reusable Lean/axiom/Comparator plans. The initial server profile is a kernel smoke test; full QRH formalization and other theorem profiles require their prepared, pinned proof projects. See [setup, scope and verification details](docs/lean-search.md).
+
+### DMG packaging
+
+See [DMG packaging and preview](docs/dmg-packaging.md) for the Finder layout,
+build dependency, and an unsigned preview command that uses an existing app.
