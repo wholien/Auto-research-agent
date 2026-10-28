@@ -49,10 +49,10 @@ for scale in [1, 2] {
     arrow.stroke()
     // Finder uses dark filenames over picture backgrounds, even in Dark Mode.
     // These plates sit behind the real labels; do not bake filenames into the art.
-    NSColor(white: 0.86, alpha: 1).setFill()
-    for (x, top, plateWidth) in [(80.0, 282.0, 160.0), (430.0, 282.0, 140.0), (265.0, 422.0, 130.0)] {
-        let plate = NSRect(x: x, y: Double(height) - top - 30, width: plateWidth, height: 30)
-        NSBezierPath(roundedRect: plate, xRadius: 15, yRadius: 15).fill()
+    NSColor(srgbRed: 0.67, green: 0.65, blue: 0.73, alpha: 1).setFill()
+    for (x, top, plateWidth) in [(94.0, 282.0, 132.0), (440.0, 282.0, 120.0), (276.0, 422.0, 108.0)] {
+        let plate = NSRect(x: x, y: Double(height) - top - 24, width: plateWidth, height: 24)
+        NSBezierPath(roundedRect: plate, xRadius: 5, yRadius: 5).fill()
     }
     NSGraphicsContext.restoreGraphicsState()
     representations.append(bitmap)
